@@ -1,7 +1,7 @@
-package com.clemente.musicplayer.dao;
+package model;
 
-import com.clemente.musicplayer.entity.Song;
 import javax.persistence.*;
+
 import java.util.List;
 
 public class SongDAO {

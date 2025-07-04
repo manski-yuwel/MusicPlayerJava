@@ -16,7 +16,7 @@ import java.util.List;
 import model.Song;
 import model.SongDAO;
 
-public class MusicPlayerUI_JPA extends JFrame {
+public class TRACKER_MusicPlayerUI_JPA_ extends JFrame {
     private static final long serialVersionUID = 1L;
 
     // Audio components
@@ -28,9 +28,8 @@ public class MusicPlayerUI_JPA extends JFrame {
     // UI Components
     private final JTable songTable;
     private final DefaultTableModel tableModel;
-    private final JTextArea lyricsArea = new JTextArea(15, 40);
-    private final JLabel albumArtLabel = new JLabel();
     private final JLabel nowPlayingLabel = new JLabel("No song selected");
+    private final JLabel albumArtLabel = new JLabel();
     private final JProgressBar progressBar = new JProgressBar();
     private final JLabel timeLabel = new JLabel("00:00 / 00:00");
 
@@ -47,7 +46,6 @@ public class MusicPlayerUI_JPA extends JFrame {
     private final Color PANEL_COLOR = Color.WHITE;
 
     // Database components - Replace HashMap with JPA
-    private final SongDAO songDAO = new SongDAO();
     private List<Song> songList = new ArrayList<>();
 
     public MusicPlayerUI_JPA() {
@@ -56,16 +54,6 @@ public class MusicPlayerUI_JPA extends JFrame {
         // Initialize database and load songs
         initializeDatabase();
         loadSongsFromDatabase();
-        
-        // Initialize table
-        String[] columnNames = {"Title", "Artist", "Duration"};
-        tableModel = new DefaultTableModel(columnNames, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        songTable = new JTable(tableModel);
         
         initializeUI();
         layoutComponents();
@@ -149,47 +137,6 @@ public class MusicPlayerUI_JPA extends JFrame {
     private void initializeUI() {
         getContentPane().setBackground(BACKGROUND_COLOR);
         
-        // Style the song table
-        songTable.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        songTable.setRowHeight(30);
-        songTable.setGridColor(new Color(220, 220, 220));
-        songTable.setSelectionBackground(PRIMARY_COLOR.brighter());
-        songTable.setSelectionForeground(Color.BLACK);
-        songTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        
-        // Style table header
-        JTableHeader header = songTable.getTableHeader();
-        header.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        header.setBackground(PRIMARY_COLOR);
-        header.setForeground(Color.BLACK);
-        header.setReorderingAllowed(false);
-        
-        // Set column widths
-        songTable.getColumnModel().getColumn(0).setPreferredWidth(300); // Title
-        songTable.getColumnModel().getColumn(1).setPreferredWidth(200); // Artist
-        songTable.getColumnModel().getColumn(2).setPreferredWidth(80);  // Duration
-        
-        // Style lyrics area
-        lyricsArea.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        lyricsArea.setBackground(new Color(248, 249, 250));
-        lyricsArea.setBorder(new EmptyBorder(15, 15, 15, 15));
-        lyricsArea.setEditable(false);
-        lyricsArea.setLineWrap(true);
-        lyricsArea.setWrapStyleWord(true);
-        
-        // Style album art
-        albumArtLabel.setPreferredSize(new Dimension(200, 200));
-        albumArtLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        albumArtLabel.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 2));
-        albumArtLabel.setBackground(Color.WHITE);
-        albumArtLabel.setOpaque(true);
-        albumArtLabel.setText("No Album Art");
-        
-        // Style now playing label
-        nowPlayingLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        nowPlayingLabel.setForeground(PRIMARY_COLOR);
-        nowPlayingLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        
         // Style progress bar
         progressBar.setStringPainted(true);
         progressBar.setString("No song loaded");
@@ -227,95 +174,22 @@ public class MusicPlayerUI_JPA extends JFrame {
         mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
         mainPanel.setBackground(BACKGROUND_COLOR);
         
-        // Title panel
-        JPanel titlePanel = createTitlePanel();
-        
-        // Left panel (song list)
-        JPanel leftPanel = createSongListPanel();
-        
         // Right panel (player controls and lyrics)
         JPanel rightPanel = createPlayerPanel();
         
-        mainPanel.add(titlePanel, BorderLayout.NORTH);
-        mainPanel.add(leftPanel, BorderLayout.WEST);
         mainPanel.add(rightPanel, BorderLayout.CENTER);
         
         add(mainPanel);
     }
 
-    private JPanel createTitlePanel() {
-        JPanel titlePanel = new JPanel();
-        titlePanel.setBackground(BACKGROUND_COLOR);
-        
-        JLabel titleLabel = new JLabel("JAVA Music Player");
-        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        titleLabel.setForeground(PRIMARY_COLOR);
-        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        
-        titlePanel.add(titleLabel);
-        return titlePanel;
-    }
-
-    private JPanel createSongListPanel() {
-        JPanel songListPanel = new JPanel(new BorderLayout());
-        songListPanel.setPreferredSize(new Dimension(400, 500));
-        songListPanel.setBorder(BorderFactory.createCompoundBorder(
-            new TitledBorder(BorderFactory.createLineBorder(new Color(220, 220, 220)), 
-                           "Song Library", 
-                           TitledBorder.LEFT, 
-                           TitledBorder.TOP, 
-                           new Font("Segoe UI", Font.BOLD, 14), 
-                           PRIMARY_COLOR),
-            new EmptyBorder(10, 10, 10, 10)
-        ));
-        
-        JScrollPane tableScrollPane = new JScrollPane(songTable);
-        tableScrollPane.setBorder(BorderFactory.createLineBorder(new Color(220, 220, 220)));
-        songListPanel.add(tableScrollPane);
-        
-        return songListPanel;
-    }
-
     private JPanel createPlayerPanel() {
         JPanel playerPanel = new JPanel(new BorderLayout(10, 10));
-        
-        // Now playing section
-        JPanel nowPlayingPanel = new JPanel(new BorderLayout());
-        nowPlayingPanel.setBorder(BorderFactory.createCompoundBorder(
-            new TitledBorder(BorderFactory.createLineBorder(new Color(220, 220, 220)), 
-                           "Now Playing", 
-                           TitledBorder.LEFT, 
-                           TitledBorder.TOP, 
-                           new Font("Segoe UI", Font.BOLD, 14), 
-                           PRIMARY_COLOR),
-            new EmptyBorder(10, 10, 10, 10)
-        ));
-        
-        nowPlayingPanel.add(nowPlayingLabel, BorderLayout.NORTH);
-        nowPlayingPanel.add(albumArtLabel, BorderLayout.CENTER);
         
         // Controls section
         JPanel controlsPanel = createControlsPanel();
         
-        // Lyrics section
-        JPanel lyricsPanel = new JPanel(new BorderLayout());
-        lyricsPanel.setBorder(BorderFactory.createCompoundBorder(
-            new TitledBorder(BorderFactory.createLineBorder(new Color(220, 220, 220)), 
-                           "Lyrics", 
-                           TitledBorder.LEFT, 
-                           TitledBorder.TOP, 
-                           new Font("Segoe UI", Font.BOLD, 14), 
-                           PRIMARY_COLOR),
-            new EmptyBorder(10, 10, 10, 10)
-        ));
-        
-        JScrollPane lyricsScrollPane = new JScrollPane(lyricsArea);
-        lyricsScrollPane.setBorder(BorderFactory.createLineBorder(new Color(220, 220, 220)));
-        lyricsPanel.add(lyricsScrollPane);
-        
         playerPanel.add(nowPlayingPanel, BorderLayout.NORTH);
         playerPanel.add(controlsPanel, BorderLayout.CENTER);
-        playerPanel.add(lyricsPanel, BorderLayout.SOUTH);
         
         return playerPanel;
     }
@@ -355,6 +229,8 @@ public class MusicPlayerUI_JPA extends JFrame {
         stopButton.addActionListener(e -> stopCurrentSong());
     }
 
+//////////////
+// NOTE: idk
     private void populateSongTable() {
         tableModel.setRowCount(0); // Clear existing rows
         for (Song song : songList) {
@@ -362,7 +238,9 @@ public class MusicPlayerUI_JPA extends JFrame {
             tableModel.addRow(row);
         }
     }
-
+    
+//////////////
+// NOTE: idk
     private void loadSelectedSong() {
         int selectedRow = songTable.getSelectedRow();
         if (selectedRow >= 0 && selectedRow < songList.size()) {

@@ -1,4 +1,4 @@
-package com.clemente.musicplayer.entity;
+package model;
 
 import javax.persistence.*;
 
