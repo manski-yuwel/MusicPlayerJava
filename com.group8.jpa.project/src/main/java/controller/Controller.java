@@ -11,15 +11,21 @@ public class Controller {
     public List<Song> getSongs(){
         return songDAO.getAllSongs();
     }
-    public void addSong(SongEvent e){               
-        Song song=new Song(
-        		e.getTitle(), 
-        		e.getArtist(), 
-        		e.getDuration(), 
-        		e.getLyrics(), 
-        		e.getAlbumArtPath(),
-        		e.getAudioFilePath()
-        		);
+    public void addSong(SongEvent e){
+    	// NOTE: This is wrong, format should be the commented one below
+    	// for adding to db. But this works so not sure
+    	Song song = e.getSong_data();
+    	
+    	// NOTE: This should be the format, 
+    	// but we dont have a system to adding new songs yet
+//        Song song=new Song(
+//        		e.getTitle(), 
+//        		e.getArtist(), 
+//        		e.getDuration(), 
+//        		e.getLyrics(), 
+//        		e.getAlbumArtPath(),
+//        		e.getAudioFilePath()
+//        		);
         
         songDAO.saveSong(song);
     }

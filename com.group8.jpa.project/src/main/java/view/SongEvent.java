@@ -2,77 +2,33 @@ package view;
 
 import java.util.EventObject;
 
-import javax.persistence.Column;
+import model.Song;
 
 public class SongEvent extends EventObject {
-	private String title;
-    private String artist;
-    private String duration; // NOTE: Try to change to int/double?
-    private String lyrics;
-    private String albumArtPath;
-    private String audioFilePath;
-       
-    public SongEvent(Object source){
-        super(source);
-    }
-
-	public SongEvent(Object source, String title, String artist, String duration, String lyrics, String albumArtPath,
-			String audioFilePath) {
+	private Song song_data = null;
+	private String command;
+	
+	public SongEvent(Object source, String command) {
 		super(source);
-		this.title = title;
-		this.artist = artist;
-		this.duration = duration;
-		this.lyrics = lyrics;
-		this.albumArtPath = albumArtPath;
-		this.audioFilePath = audioFilePath;
+		this.command = command;
 	}
 
-	public String getTitle() {
-		return title;
+	public SongEvent(Object source, Song song_data, String command) {
+		super(source);
+		this.song_data = song_data;
+		this.command = command;
+	}
+	
+	public String getCommand() {
+		return command;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	public Song getSong_data() {
+		return song_data;
 	}
 
-	public String getArtist() {
-		return artist;
+	public void setSong_data(Song song_data) {
+		this.song_data = song_data;
 	}
 
-	public void setArtist(String artist) {
-		this.artist = artist;
-	}
-
-	public String getDuration() {
-		return duration;
-	}
-
-	public void setDuration(String duration) {
-		this.duration = duration;
-	}
-
-	public String getLyrics() {
-		return lyrics;
-	}
-
-	public void setLyrics(String lyrics) {
-		this.lyrics = lyrics;
-	}
-
-	public String getAlbumArtPath() {
-		return albumArtPath;
-	}
-
-	public void setAlbumArtPath(String albumArtPath) {
-		this.albumArtPath = albumArtPath;
-	}
-
-	public String getAudioFilePath() {
-		return audioFilePath;
-	}
-
-	public void setAudioFilePath(String audioFilePath) {
-		this.audioFilePath = audioFilePath;
-	}
-    
 }
