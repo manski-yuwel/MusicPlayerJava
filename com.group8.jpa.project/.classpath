@@ -5,7 +5,7 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry excluding="com/clemente/musicplayer/TRACKER_MusicPlayerUI_JPA_.java" kind="src" path="src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jpalibs">
 		<attributes>
 			<attribute name="owner.project.facets" value="jpt.jpa"/>
