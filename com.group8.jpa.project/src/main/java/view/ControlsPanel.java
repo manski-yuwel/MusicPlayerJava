@@ -10,9 +10,10 @@ import java.awt.event.*;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 
 public class ControlsPanel extends JPanel {
+	private VolumePanel volumePanel = new VolumePanel();
+	
     // Control buttons
     private final JButton playButton = new JButton("Play");
     private final JButton pauseButton = new JButton("Pause");
@@ -21,8 +22,8 @@ public class ControlsPanel extends JPanel {
 	private SongListener songListener;
 	
 	public ControlsPanel() {
-        setLayout(new BorderLayout(10, 10));
-        setBorder(new EmptyBorder(20, 10, 20, 10));
+        setLayout(new BorderLayout());
+        setBorder(new EmptyBorder(0, 10, 10, 10));
         
         // Style control buttons
         styleControlButton(playButton, new Color(155, 82, 224));
@@ -30,7 +31,7 @@ public class ControlsPanel extends JPanel {
         styleControlButton(stopButton, Color.RED);
         
         // Initially disable pause button
-        pauseButton.setEnabled(false);
+        toggle_play_and_pause("Play");
         
         // Buttons section
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
@@ -39,6 +40,7 @@ public class ControlsPanel extends JPanel {
         buttonsPanel.add(stopButton);
         
         add(buttonsPanel, BorderLayout.CENTER);
+        add(volumePanel, BorderLayout.EAST);
         
         // Control buttons
         playButton.addActionListener(new ActionListener() {
@@ -72,7 +74,10 @@ public class ControlsPanel extends JPanel {
         });
 	}
 
-	
+	public VolumePanel getVolumePanel() {
+		return volumePanel;
+	}
+
 	public SongListener getSongListener() {
 		return songListener;
 	}
@@ -104,11 +109,13 @@ public class ControlsPanel extends JPanel {
         button.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) {
             	if (button.isEnabled()) {
-            		button.setBorder(new LineBorder(Color.BLACK, 2, false));
+            		button.setBackground(Color.BLACK);
+            		button.setForeground(Color.WHITE);
             	}
             }
             public void mouseExited(MouseEvent e) {
-            	button.setBorder(new EmptyBorder(10, 20, 10, 20));
+            	button.setBackground(color);
+            	button.setForeground(Color.BLACK);
             }
         });
     }

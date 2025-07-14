@@ -41,6 +41,7 @@ public class App {
             	// Button
             	UIManager.put("Button.font", new Font(FONT_NAME, Font.BOLD, FONT_SIZE));
             	UIManager.put("Button.foreground", Color.BLACK);
+            	UIManager.put("Button.background", Color.CYAN);
             	UIManager.put("Button.border", new EmptyBorder(10, 20, 10, 20));
             	
         		// textArea
