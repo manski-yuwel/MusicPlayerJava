@@ -58,7 +58,7 @@ public class MusicPlayerUI_JPA extends JFrame{
 
     public MusicPlayerUI_JPA(){
     	setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(700, 500);
+        setSize(1000, 600);
         setTitle("Music Player");
         
         // north - title

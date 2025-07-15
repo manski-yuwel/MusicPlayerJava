@@ -22,6 +22,7 @@ public class ControlsPanel extends JPanel {
 	private SongListener songListener;
 	
 	public ControlsPanel() {
+		setMinimumSize(new Dimension(650, 60));
         setLayout(new BorderLayout());
         setBorder(new EmptyBorder(0, 10, 10, 10));
         

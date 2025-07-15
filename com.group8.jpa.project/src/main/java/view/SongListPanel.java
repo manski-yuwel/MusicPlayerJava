@@ -3,6 +3,7 @@ package view;
 import model.Song;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.util.List;
 import javax.swing.*;
@@ -16,6 +17,7 @@ public class SongListPanel extends JPanel {
 	private JButton switchButton = new JButton("Lyrics");
 
     public SongListPanel() {
+    	setMinimumSize(new Dimension(300, 200));
     	setLayout(new BorderLayout(0, 10));
     	setBorder(new EmptyBorder(10, 10, 10, 10));
     	
@@ -37,8 +39,8 @@ public class SongListPanel extends JPanel {
 
         // Set column widths
         table.getColumnModel().getColumn(0).setPreferredWidth(300); // Title
-        table.getColumnModel().getColumn(1).setPreferredWidth(100); // Artist
-        table.getColumnModel().getColumn(2).setPreferredWidth(45);  // Duration
+        table.getColumnModel().getColumn(1).setPreferredWidth(200); // Artist
+        table.getColumnModel().getColumn(2).setPreferredWidth(75);  // Duration
         
         add(northPanel, BorderLayout.NORTH);
         add(new JScrollPane(table), BorderLayout.CENTER);
