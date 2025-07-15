@@ -49,6 +49,8 @@ public class MusicPlayerUI_JPA extends JFrame{
     private GridBagConstraints gbc = new GridBagConstraints();
 
     private Controller controller = new Controller();
+
+    private Boolean userIsSeeking = false;
     
     // Audio components
     private Clip currentClip;
@@ -159,6 +161,22 @@ public class MusicPlayerUI_JPA extends JFrame{
         add(centerPanel, BorderLayout.CENTER);
         
         setVisible(true);
+        
+        // Listener for seek bar navigation
+        nowPlayingPanel.getSeekBar().addChangeListener(e -> {
+            JSlider seekBar = nowPlayingPanel.getSeekBar();
+            if (seekBar.getValueIsAdjusting()) {
+            	userIsSeeking = true;
+            } else if (userIsSeeking) {
+                long totalLength = currentClip.getMicrosecondLength();
+                long newPosition = (long) ((seekBar.getValue() / 100.0) * totalLength);
+                currentClip.setMicrosecondPosition(newPosition);
+
+                // Update time label
+                nowPlayingPanel.getCurrentTimeLabel().setText(formatTime(newPosition / 1_000_000));
+                userIsSeeking = false;
+            }
+        });
     }
     
     private void addInitialSongs() {
@@ -230,8 +248,7 @@ public class MusicPlayerUI_JPA extends JFrame{
             loadAlbumArt(selectedSong.getAlbumArtPath());
             
             // Reset progress
-            nowPlayingPanel.getProgressBar().setValue(0);
-            nowPlayingPanel.getProgressBar().setString("Ready to play: " + selectedSong.getTitle());
+            nowPlayingPanel.getSeekBar().setValue(0);
             nowPlayingPanel.getCurrentTimeLabel().setText("00:00");
             nowPlayingPanel.getTimeLabel().setText(selectedSong.getDuration());
             
@@ -302,7 +319,6 @@ public class MusicPlayerUI_JPA extends JFrame{
                     }
                 }
 
-                nowPlayingPanel.getProgressBar().setString("Playing: " + selectedSong.getTitle());
                 controlsPanel.toggle_play_and_pause("Pause");
                 
             } catch (Exception e) {
@@ -328,7 +344,10 @@ public class MusicPlayerUI_JPA extends JFrame{
                 
                 if (totalLength > 0) {
                     int progress = (int) ((currentPosition * 100) / totalLength);
-                    nowPlayingPanel.getProgressBar().setValue(progress);
+                    // Only update the slider if the user is NOT adjusting it
+                    if (!nowPlayingPanel.getSeekBar().getValueIsAdjusting()) {
+                        nowPlayingPanel.getSeekBar().setValue(progress);
+                    }
                     
                     // Update time display
                     String currentTime = formatTime(currentPosition / 1000000);
@@ -345,7 +364,7 @@ public class MusicPlayerUI_JPA extends JFrame{
             }
         });
         
-        nowPlayingPanel.getProgressBar().setMaximum(100);
+        nowPlayingPanel.getSeekBar().setMaximum(100);
         progressTimer.start();
     }
     
@@ -374,15 +393,11 @@ public class MusicPlayerUI_JPA extends JFrame{
         isPaused = false;
         pausePosition = 0;
         controlsPanel.toggle_play_and_pause("Play");
-        nowPlayingPanel.getProgressBar().setValue(0);
+        nowPlayingPanel.getSeekBar().setValue(0);
         
         Song selectedSong = songListPanel.getSelectedSong();
 
-        if (selectedSong != null) {
-            nowPlayingPanel.getProgressBar().setString("Stopped: " + selectedSong.getTitle());
-        } else {
-        	nowPlayingPanel.getProgressBar().setString("No song selected");
-        }
+
         
     	nowPlayingPanel.getCurrentTimeLabel().setText("00:00");
     	nowPlayingPanel.getTimeLabel().setText("00:00");
@@ -395,7 +410,6 @@ public class MusicPlayerUI_JPA extends JFrame{
             isPaused = true;
             
             controlsPanel.toggle_play_and_pause("Play");
-            nowPlayingPanel.getProgressBar().setString("Paused");
         }
     }
     

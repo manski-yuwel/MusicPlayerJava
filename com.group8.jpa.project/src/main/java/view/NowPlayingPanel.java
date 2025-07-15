@@ -21,7 +21,7 @@ public class NowPlayingPanel extends JPanel{
     private final JPanel songLabelPanel = new JPanel(new GridLayout(0,1));
     
     private final JPanel progressPanel = new JPanel(new BorderLayout(5, 5));
-    private final JProgressBar progressBar = new JProgressBar();
+    private final JSlider seekBar = new JSlider(0, 100, 0);
     private final JLabel currentTimeLabel = new JLabel("00:00");
     private final JLabel timeLabel = new JLabel("00:00");
 	
@@ -50,14 +50,13 @@ public class NowPlayingPanel extends JPanel{
 		songDisplayPanel.add(albumArtLabel, BorderLayout.CENTER);
 		songDisplayPanel.add(songLabelPanel, BorderLayout.SOUTH);
         
+		// Style seek bar
+		seekBar.setUI(new CircleThumbSliderUI(seekBar));
+		
         // Progress section
 		progressPanel.add(currentTimeLabel, BorderLayout.WEST);
-        progressPanel.add(progressBar, BorderLayout.CENTER);
+        progressPanel.add(seekBar, BorderLayout.CENTER);
         progressPanel.add(timeLabel, BorderLayout.EAST);
-        
-        // Style progress bar
-        progressBar.setStringPainted(true);
-        progressBar.setString("No song loaded");
         
         // Style time label
         timeLabel.setFont(new Font("Consolas", Font.PLAIN, 12));
@@ -95,8 +94,8 @@ public class NowPlayingPanel extends JPanel{
 		return albumArtLabel;
 	}
 
-	public JProgressBar getProgressBar() {
-		return progressBar;
+	public JSlider getSeekBar() {
+		return seekBar;
 	}
 
 	public JLabel getCurrentTimeLabel() {
