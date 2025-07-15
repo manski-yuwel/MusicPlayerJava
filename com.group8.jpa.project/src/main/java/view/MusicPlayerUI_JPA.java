@@ -162,7 +162,7 @@ public class MusicPlayerUI_JPA extends JFrame{
     }
     
     private void addInitialSongs() {
-    	String lyricsPath = System.getProperty("user.dir") + "/src/main/java/lyrics/";
+    	String lyricsPath = System.getProperty("user.dir") + "/resources/lyrics/";
     	
         Song[] initialSongs = {
             new Song("Bohemian Rhapsody", "Queen", "5:59",
@@ -242,7 +242,7 @@ public class MusicPlayerUI_JPA extends JFrame{
 
     private void loadAlbumArt(String imagePath) {
         try {
-        	String folderPath = System.getProperty("user.dir") + "/src/main/java/images/";
+        	String folderPath = System.getProperty("user.dir") + "/resource/images/";
         	
             // Try to load from resources or use placeholder
             ImageIcon icon = new ImageIcon(folderPath + imagePath);
@@ -282,7 +282,7 @@ public class MusicPlayerUI_JPA extends JFrame{
                     stopCurrentSong();
                     
                     // Load audio file from src/audio folder
-                	String folderPath = System.getProperty("user.dir") + "/src/main/java/audio/";
+                	String folderPath = System.getProperty("user.dir") + "/resource/audio/";
                     String audioPath = folderPath + selectedSong.getAudioFilePath();
                     File audioUrl = new File(audioPath);
                     
