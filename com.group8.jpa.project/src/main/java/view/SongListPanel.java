@@ -14,7 +14,7 @@ public class SongListPanel extends JPanel {
 	private SongListTableModel tableModel = new SongListTableModel();
 	private JTable table = new JTable(tableModel);
 	
-	private JButton switchButton = new JButton("Lyrics");
+	private JButton switchButton = new JButton("");
 
     public SongListPanel() {
     	setMinimumSize(new Dimension(300, 200));
@@ -24,7 +24,6 @@ public class SongListPanel extends JPanel {
     	JPanel northPanel = new JPanel(new BorderLayout());
     	JLabel panelTitle = new JLabel("Song Library");
     	panelTitle.setFont(new Font(panelTitle.getFont().getName(), Font.BOLD, 16));
-    	switchButton.setFocusable(false);
     	
     	northPanel.add(panelTitle, BorderLayout.CENTER);
     	northPanel.add(switchButton, BorderLayout.EAST);

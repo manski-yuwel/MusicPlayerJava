@@ -6,6 +6,7 @@ import model.Song;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -14,6 +15,8 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -23,12 +26,14 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 public class MusicPlayerUI_JPA extends JFrame{
     private LyricsPanel lyricsPanel = new LyricsPanel();
     private SongListPanel songListPanel = new SongListPanel();
     private NowPlayingPanel nowPlayingPanel = new NowPlayingPanel();
     private ControlsPanel controlsPanel = new ControlsPanel();
+    private SongFormPanel songFormPanel = new SongFormPanel();
     
     private CardLayout card = new CardLayout();
     private JPanel cardPanel = new JPanel(card) {
@@ -36,7 +41,6 @@ public class MusicPlayerUI_JPA extends JFrame{
         public Dimension getPreferredSize() {
         	// workaround cause JTable is hogging space :(
         	if (getParent() != null) {
-        		int totalWidth = getParent().getWidth();
         		int width = (int) (getParent().getWidth() / 3.0);
                 return new Dimension(width, getParent().getHeight());
         	}
@@ -65,11 +69,13 @@ public class MusicPlayerUI_JPA extends JFrame{
         
         // north - title
         JPanel titlePanel = new JPanel();
+        titlePanel.setBackground(new Color(138, 43, 226));
+        titlePanel.setBorder(new EmptyBorder(15,0,10,0));
         
         JLabel titleLabel = new JLabel("JAVA Music Player");
-        Font defaultStyle = titleLabel.getFont();
-        titleLabel.setFont(new Font(defaultStyle.getName(), Font.BOLD, 28));
+        titleLabel.setFont(new Font("Consolas", Font.BOLD, 28));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        titleLabel.setForeground(Color.WHITE);
         
         titlePanel.add(titleLabel);
         
@@ -101,9 +107,20 @@ public class MusicPlayerUI_JPA extends JFrame{
         gbc.fill = GridBagConstraints.BOTH;
         centerPanel.add(cardPanel, gbc);
         
+        cardPanel.add(songFormPanel, "songForm");
         cardPanel.add(songListPanel, "songList");
         cardPanel.add(lyricsPanel, "lyrics");
- 
+        
+        // stylebuttons
+        Color button_colors = new Color(3, 197, 211);
+        styleControlButton(controlsPanel.getPlayButton() , button_colors, "play");
+        styleControlButton(controlsPanel.getPauseButton(), button_colors, "pause");
+        styleControlButton(controlsPanel.getStopButton(), button_colors, "stop");
+        styleControlButton(controlsPanel.getNextButton(), button_colors, "next");
+        styleControlButton(controlsPanel.getPrevButton(), button_colors, "previous");
+        styleControlButton(songListPanel.getSwitchButton(), button_colors, "mic");
+        styleControlButton(lyricsPanel.getSwitchButton(), button_colors, "menu");
+        
         // connect db to songlist using controller
         if (controller.getSongs().isEmpty()) {
         	addInitialSongs();
@@ -133,6 +150,12 @@ public class MusicPlayerUI_JPA extends JFrame{
 	                case "Stop": 
 	                	stopCurrentSong();
 	                	break;
+	                case "Next": 
+	                	changeTableSelection("Next", e);
+	                	break;
+	                case "Previous": 
+	                	changeTableSelection("Previous", e);
+	                	break;
             	}
             }
         });
@@ -156,11 +179,6 @@ public class MusicPlayerUI_JPA extends JFrame{
                 loadSelectedSong();
             }
         });
-   
-        add(titlePanel, BorderLayout.NORTH);
-        add(centerPanel, BorderLayout.CENTER);
-        
-        setVisible(true);
         
         // Listener for seek bar navigation
         nowPlayingPanel.getSeekBar().addChangeListener(e -> {
@@ -177,10 +195,15 @@ public class MusicPlayerUI_JPA extends JFrame{
                 userIsSeeking = false;
             }
         });
+        
+        add(titlePanel, BorderLayout.NORTH);
+        add(centerPanel, BorderLayout.CENTER);
+        
+        setVisible(true);
     }
     
     private void addInitialSongs() {
-    	String lyricsPath = System.getProperty("user.dir") + "/resources/lyrics/";
+    	String lyricsPath = System.getProperty("user.dir") + "/resource/lyrics/";
     	
         Song[] initialSongs = {
             new Song("Bohemian Rhapsody", "Queen", "5:59",
@@ -313,7 +336,7 @@ public class MusicPlayerUI_JPA extends JFrame{
                         startProgressTracking();
                         
                         // connect clip to volume
-                        controlsPanel.getVolumePanel().setAudioClip(currentClip);
+                        nowPlayingPanel.getVolumePanel().setAudioClip(currentClip);
                     } else {
                         throw new IOException("Audio file not found: " + audioPath);
                     }
@@ -394,11 +417,7 @@ public class MusicPlayerUI_JPA extends JFrame{
         pausePosition = 0;
         controlsPanel.toggle_play_and_pause("Play");
         nowPlayingPanel.getSeekBar().setValue(0);
-        
-        Song selectedSong = songListPanel.getSelectedSong();
-
-
-        
+  
     	nowPlayingPanel.getCurrentTimeLabel().setText("00:00");
     	nowPlayingPanel.getTimeLabel().setText("00:00");
     }
@@ -415,6 +434,61 @@ public class MusicPlayerUI_JPA extends JFrame{
     
     private void changeCard(String target) {
         card.show(cardPanel, target);
+    }
+    
+    private void changeTableSelection(String direction, SongEvent evt) {
+    	JTable table = songListPanel.getTable();
+    	int currentRow = table.getSelectedRow();
+    	int rowCount = table.getRowCount();
+
+    	if (direction == "Next") {
+    		// get next song if not the last song
+    		if (currentRow < rowCount - 1) {
+        	    table.setRowSelectionInterval(currentRow + 1, currentRow + 1);
+        	} else {
+        		// if last song, change to first song
+        		table.setRowSelectionInterval(0, 0);
+        	}
+    	} else {
+    		// get previous song if not first song
+    		if (currentRow > 0) {
+        	    table.setRowSelectionInterval(currentRow - 1, currentRow - 1);
+        	} else {
+        		// if first song, change to last song
+        		table.setRowSelectionInterval(rowCount - 1, rowCount - 1);
+        	}
+    	}
+    	
+    	evt.setSong_data(songListPanel.getSelectedSong());
+    	
+    	// play song
+    	playCurrentSong(evt);
+    }
+    
+    private void styleControlButton(JButton button, Color color, String icon_name) {
+    	String iconPath = System.getProperty("user.dir") + "/resource/icons/";
+    	ImageIcon icon = new ImageIcon(iconPath + icon_name + ".png");
+        Image scaledImage = icon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+    	
+    	button.setIcon(new ImageIcon(scaledImage));
+    	
+        button.setBackground(color);
+        button.setFocusable(false);
+        button.setBorderPainted(false);
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.setPreferredSize(new Dimension(40, 40));
+
+        // manually adjust on hover
+        button.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+            	if (button.isEnabled()) {
+            		button.setBackground(new Color(150, 150, 150));
+            	}
+            }
+            public void mouseExited(MouseEvent e) {
+            	button.setBackground(color);
+            }
+        });
     }
     
 }

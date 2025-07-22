@@ -14,7 +14,8 @@ public class App {
             public void run() {
             	// style setting
             	Color PRIMARY_COLOR = new Color(138, 43, 226);
-            	Color ACCENT_COLOR = new Color(255, 20, 147);
+//            	Color SECONDARY_COLOR = new Color(0, 173, 189);
+//            	Color ACCENT_COLOR = new Color(255, 20, 147);
             	Color BACKGROUND_COLOR = new Color(240, 240, 250);
             	
             	String FONT_NAME = "Segoe UI";
@@ -38,20 +39,10 @@ public class App {
             	UIManager.put("TableHeader.background", PRIMARY_COLOR);
             	UIManager.put("TableHeader.foreground", Color.BLACK);
             	
-            	// Button
-            	UIManager.put("Button.font", new Font(FONT_NAME, Font.BOLD, FONT_SIZE));
-            	UIManager.put("Button.foreground", Color.BLACK);
-            	UIManager.put("Button.background", Color.CYAN);
-            	UIManager.put("Button.border", new EmptyBorder(10, 20, 10, 20));
-            	
         		// textArea
             	UIManager.put("TextArea.font", new Font(FONT_NAME, Font.PLAIN, FONT_SIZE));
             	UIManager.put("TextArea.background", BACKGROUND_COLOR.brighter());
             	UIManager.put("TextArea.border", new EmptyBorder(15, 15, 15, 15));
-
-            	// Progress bar
-            	UIManager.put("ProgressBar.background", Color.WHITE);
-            	UIManager.put("ProgressBar.foreground", ACCENT_COLOR);
             	
             	// Label
             	UIManager.put("Label.foreground", PRIMARY_COLOR);
