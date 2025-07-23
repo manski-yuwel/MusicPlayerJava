@@ -107,10 +107,6 @@ public class MusicPlayerUI_JPA extends JFrame{
         gbc.fill = GridBagConstraints.BOTH;
         centerPanel.add(cardPanel, gbc);
         
-        cardPanel.add(songFormPanel, "songForm");
-        cardPanel.add(songListPanel, "songList");
-        cardPanel.add(lyricsPanel, "lyrics");
-        
         // stylebuttons
         Color button_colors = new Color(3, 197, 211);
         styleControlButton(controlsPanel.getPlayButton() , button_colors, "play");
@@ -159,6 +155,22 @@ public class MusicPlayerUI_JPA extends JFrame{
             	}
             }
         });
+        songFormPanel.setFormListener(new FormListener() {
+			public void formEventOccured(FormEvent evt) {
+				// convert lyrics file to text
+				String lyricsPath = System.getProperty("user.dir") + "/resource/lyrics/";
+				evt.setLyrics(getTextFromFile(lyricsPath, evt.getLyrics()));
+
+				controller.addSong(evt);
+				songListPanel.setData(controller.getSongs());
+				songListPanel.refresh();
+			}
+		});
+        
+        // card layout setup
+        cardPanel.add(songListPanel, "songList");
+        cardPanel.add(songFormPanel, "songForm");
+        cardPanel.add(lyricsPanel, "lyrics");
         
         // card switch listener
         // NOTE: convert to custom event later
@@ -172,6 +184,17 @@ public class MusicPlayerUI_JPA extends JFrame{
             	changeCard("songList");
             }
         });
+        songListPanel.getAddButton().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+            	changeCard("songForm");
+            }
+        });
+        songFormPanel.getCancelButton().addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent evt) {
+        		changeCard("songList");
+        	}
+        });
+        
 
         // Song table selection
         songListPanel.getTable().getSelectionModel().addListSelectionListener(e -> {
@@ -179,6 +202,22 @@ public class MusicPlayerUI_JPA extends JFrame{
                 loadSelectedSong();
             }
         });
+        
+        // delete selected song
+        songListPanel.getDeleteButton().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+            	controller.deleteSong(songListPanel.getSelectedSong());
+            	
+            	songListPanel.setData(controller.getSongs());
+				songListPanel.refresh();
+				
+				JOptionPane.showMessageDialog(MusicPlayerUI_JPA.this, 
+                        "Successfully deleted song.", 
+                        "Deleted Song", 
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        
         
         // Listener for seek bar navigation
         nowPlayingPanel.getSeekBar().addChangeListener(e -> {
@@ -229,7 +268,7 @@ public class MusicPlayerUI_JPA extends JFrame{
         
         for (Song song : initialSongs) {
             try {
-            	controller.addSong(new SongEvent(this, song, ""));
+            	controller.addSong(song);
                 System.out.println("Saved song: " + song.getTitle());
             } catch (Exception e) {
                 System.err.println("Error saving song: " + song.getTitle() + " - " + e.getMessage());
@@ -350,6 +389,7 @@ public class MusicPlayerUI_JPA extends JFrame{
                     "\nMake sure WAV files are in src/audio/ folder", 
                     "Playback Error", 
                     JOptionPane.ERROR_MESSAGE);
+                System.out.println(e);
             }
         } else {
             JOptionPane.showMessageDialog(this, 
