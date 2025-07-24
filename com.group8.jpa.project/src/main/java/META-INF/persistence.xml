@@ -10,7 +10,7 @@
 		<property name ="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/memberdata?createDatabaseIfNotExist=true"/>
 		<property name ="javax.persistence.jdbc.user" value="root"/>
 		<!-- Change the value of the password based on the password of the user's root -->
-		<property name ="javax.persistence.jdbc.password" value="Lane25$!"/> 
+		<property name ="javax.persistence.jdbc.password" value="qazwsx"/> 
 		<property name ="eclipselink.logging.level" value="SEVERE"/>
 		<property name ="eclipselink.ddl-generation" value="create-or-extend-tables"/>
 		</properties>

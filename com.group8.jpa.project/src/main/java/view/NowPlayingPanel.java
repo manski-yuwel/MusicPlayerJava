@@ -10,9 +10,10 @@ import java.awt.Font;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
 
 public class NowPlayingPanel extends JPanel{
+	private VolumePanel volumePanel = new VolumePanel();
+	
 	private final JLabel nowPlayingLabel = new JLabel("No song selected");
 	private final JLabel artistNameLabel = new JLabel("");
     private final JLabel albumArtLabel = new JLabel();
@@ -52,11 +53,16 @@ public class NowPlayingPanel extends JPanel{
         
 		// Style seek bar
 		seekBar.setUI(new CircleThumbSliderUI(seekBar));
+		seekBar.setFocusable(false);
 		
         // Progress section
 		progressPanel.add(currentTimeLabel, BorderLayout.WEST);
         progressPanel.add(seekBar, BorderLayout.CENTER);
         progressPanel.add(timeLabel, BorderLayout.EAST);
+        
+        JPanel slidersPanel = new JPanel(new BorderLayout(20,0));
+        slidersPanel.add(progressPanel, BorderLayout.CENTER);
+        slidersPanel.add(volumePanel, BorderLayout.EAST);
         
         // Style time label
         timeLabel.setFont(new Font("Consolas", Font.PLAIN, 12));
@@ -79,7 +85,11 @@ public class NowPlayingPanel extends JPanel{
 		});
         
         add(songDisplayPanel, BorderLayout.CENTER);
-        add(progressPanel, BorderLayout.SOUTH);
+        add(slidersPanel, BorderLayout.SOUTH);
+	}
+	
+	public VolumePanel getVolumePanel() {
+		return volumePanel;
 	}
 
 	public JLabel getNowPlayingLabel() {

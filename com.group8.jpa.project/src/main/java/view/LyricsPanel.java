@@ -15,7 +15,7 @@ import javax.swing.border.EmptyBorder;
 public class LyricsPanel extends JPanel {
 	private final JTextArea lyricsArea = new JTextArea();
 	
-	private JButton switchButton = new JButton("Songs");
+	private JButton switchButton = new JButton("");
 
 	public LyricsPanel() {
 		setLayout(new BorderLayout(0, 10));
@@ -24,7 +24,6 @@ public class LyricsPanel extends JPanel {
 		JPanel northPanel = new JPanel(new BorderLayout());
     	JLabel panelTitle = new JLabel("Lyrics");
     	panelTitle.setFont(new Font(panelTitle.getFont().getName(), Font.BOLD, 16));
-    	switchButton.setFocusable(false);
     	
     	northPanel.add(panelTitle, BorderLayout.CENTER);
     	northPanel.add(switchButton, BorderLayout.EAST);

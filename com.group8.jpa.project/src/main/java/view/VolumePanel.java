@@ -15,6 +15,9 @@ public class VolumePanel extends JPanel  {
         // Slider setup
         volumeSlider = new JSlider(0, 100, 70);
         volumeSlider.setMajorTickSpacing(25);
+        
+        Dimension preferredSize = volumeSlider.getPreferredSize();
+        volumeSlider.setPreferredSize(new Dimension(100, preferredSize.height));
 
         // Slider listener
         volumeSlider.addChangeListener(e -> {
@@ -28,7 +31,7 @@ public class VolumePanel extends JPanel  {
 
 	public void setAudioClip(Clip audioClip) {
 		this.audioClip = audioClip;
-		volumeControl = (FloatControl) audioClip.getControl(FloatControl.Type.MASTER_GAIN);
+		volumeControl = (FloatControl) this.audioClip.getControl(FloatControl.Type.MASTER_GAIN);
         setVolume(volumeSlider.getValue());
 	}
 
